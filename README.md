@@ -1,12 +1,12 @@
 ## Distilling the Knowledge of BERT for Sequence-to-Sequence ASR
 
 ### Requirements
-
-hoge
+subword-nmt https://github.com/rsennrich/subword-nmt
 
 ### Data preparation
 
-We used two corpus: CSJ and BCCWJ.
+We used two corpus:
+the Corpus of Spontaneous Japanese (CSJ) and the Balanced Corpus of Contemporary Written Japanese (BCCWJ).
 CSJ is for training of ASR and BERT, and BCCWJ is for training of BERT.
 
 BCCWJ
@@ -21,15 +21,34 @@ cd ./prep/csj
 bash prep.sh {PATH_TO_YOUR_CSJ}
 ```
 
-### Pre-training BERT
+### Pre-train BERT
 
-### Training seq2seq ASR
+
+### Soft label preparation
+
+```
+```
+
+### Train seq2seq ASR
 
 baseline seq2seq ASR
 ```
-
+python train.py -conf base.config
+```
+seq2seq ASR with soft labels from BERT (utterance-level)
+```
+python train.py -conf bert_utt.config
+```
+seq2seq ASR with soft labels from BERT (full-length)
+```
+python train.py -conf bert_full.config
 ```
 
+### Test ASR
+
+```
+python test.py -conf {base.config or bert_utt.config or bert_full.config}
+```
 
 ### Result
 
