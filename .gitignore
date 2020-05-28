@@ -1,3 +1,5 @@
 data/*
 !script.bccwj.example
 !script.csj.example
+log/
+checkpoints/
