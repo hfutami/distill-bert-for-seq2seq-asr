@@ -5,20 +5,18 @@ import pickle
 import logging
 import torch
 from torch.nn.utils.rnn import pad_sequence
-from pytorch_transformers import (BertForMaskedLM,
-                                  modeling_bert)
-
-def modified_softmax(x, dim, temp):
-    e_max, _ = torch.max((x / temp), dim=dim, keepdim=True)
-    e_cared = torch.exp((x / temp) - e_max)
-    e_sum = torch.sum(e_cared, dim=dim, keepdim=True)
-    return e_cared / e_sum
+from pytorch_transformers import BertForMaskedLM, modeling_bert
 
 TOP_K = 8
 BATCH_SIZE = 50
 LOG_STEP = 10000
 SAVE_STEP = 10000
 
+def modified_softmax(x, dim, temp):
+    e_max, _ = torch.max((x / temp), dim=dim, keepdim=True)
+    e_cared = torch.exp((x / temp) - e_max)
+    e_sum = torch.sum(e_cared, dim=dim, keepdim=True)
+    return e_cared / e_sum
 
 def get_label(model, device, path, save_path, temp):
     model.eval()
@@ -99,15 +97,21 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-conf", type=str)
     parser.add_argument("-model", type=str)
-    parser.add_argument("-num_ctx", type=int)
+    parser.add_argument("-ctx", type=str)
     parser.add_argument("--temp", type=float, default=3.0)
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
 
-    config_base = os.path.basename(args.config_path)
-    script_path = f"../data/csj/script.aps.id.bert.c{args.num_ctx}.masked"
-    log_path = f"./log/get_label_{config_base}_c{args.num_ctx}_k{TOP_K}_temp{args.temp}.log"
-    save_path = f"./labels/{config_base}_bert_c{args.num_ctx}.k{TOP_K}.temp{args.temp}.labels"
+    os.makedirs("../data/log/", exist_ok=True)
+    os.makedirs("../data/soft_labels/", exist_ok=True)
+    if args.ctx == "utt":
+        script_path = f"../data/csj/csj.aps.pathaid.bert.c1.masked"
+        log_path = f"../data/log/prep_soft_labels_utt.log"
+        save_path = f"../data/soft_labels/bert-utt.labels"
+    elif args.ctx == "full":
+        script_path = f"../data/csj/csj.aps.pathaid.bert.c256.masked"
+        log_path = f"../data/log/prep_soft_labels_full.log"
+        save_path = f"../data/soft_labels/bert-full.labels"
 
     if args.debug:
         logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
@@ -120,7 +124,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     config = configparser.ConfigParser()
-    config.read(args.config_path)
+    config.read(args.conf)
     vocab_size = int(config["vocab"]["vocab_size"])
     hidden_size = int(config["model"]["hidden_size"])
     num_hidden_layers = int(config["model"]["num_hidden_layers"])
@@ -136,9 +140,9 @@ if __name__ == "__main__":
                                           max_position_embeddings=max_position_embeddings)
     model = BertForMaskedLM(config=bertconfig)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    state_dict = torch.load(args.model_path, map_location=device)
+    state_dict = torch.load(args.model, map_location=device)
     model.load_state_dict(state_dict)
-    logging.info(f"load model from {args.model_path}")
+    logging.info(f"load model from {args.model}")
     model.to(device)
 
     get_label(model, device, script_path, save_path, args.temp)

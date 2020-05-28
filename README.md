@@ -17,46 +17,49 @@ They should be put as `./data/csj.aps` and `./data/csj.sps`.
 2. Prepare BCCWJ-LB and BCCWJ-PB data in the same format as `./data/bccwj.example`.
 They should be put as `./data/bccwj.lb` and `./data/bccwj.pb`.
 
-3. run `./prep-bccwj.sh` (at `./prep`)
+3. run `./prep-bccwj.sh` (cd: `./prep`)
 
-4. run `./prep-csj.sh` (at `./prep`)
+4. run `./prep-csj.sh` (cd: `./prep`)
 
 ### Pre-train BERT
 
-We used ...
+We used TITAN X (12GB) x3 for pre-training.
+
 ```
-(at ./bert)
+(cd: ./bert)
 python train.py -conf bert-bccwj.config
 python train.py -conf bert-csj.config
 ```
 
 ### Soft label preparation
 ```
-(at ./bert)
-python prep_soft_labels.py -model checkpoints/bert.csj.epoch50
+(cd: ./bert)
+python prep_soft_labels.py -conf bert-csj.config -model checkpoints/bert.csj.network.epoch50 -ctx utt
+python prep_soft_labels.py -conf bert-csj.config -model checkpoints/bert.csj.network.epoch50 -ctx full
 ```
 
 ### Train seq2seq ASR
 
 baseline seq2seq ASR
 ```
-(at ./asr)
+(cd: ./asr)
 python train.py -conf base.config
 ```
 seq2seq ASR with soft labels from BERT (utterance-level)
 ```
-(at ./asr)
+(cd: ./asr)
 python train.py -conf bert-utt.config
 ```
 seq2seq ASR with soft labels from BERT (full-length)
 ```
-(at ./asr)
+(cd: ./asr)
 python train.py -conf bert-full.config
 ```
 
 ### Test ASR
 
 ```
+(cd: ./asr)
 python test.py -conf {base.config or bert-utt.config or bert-full.config}
 ```
 

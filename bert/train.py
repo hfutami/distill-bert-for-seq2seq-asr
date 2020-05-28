@@ -46,8 +46,6 @@ def train_dataset(dataset, model, optimizer, multi_gpu, device, epoch,
         if (step + 1) % log_step == 0:
             logging.info(f"epoch = {epoch + 1} step {step + 1} / {num_steps}: {(loss_sum / log_step):.6f}")
             loss_sum = 0
-            # DEBUG
-            break
 
     return loss_ds
 
@@ -171,8 +169,6 @@ def train():
                                         mask_id=mask_id,
                                         max_seq_len=max_seq_len)
                 logging.info(f"step {step_ds + 1} / {len(datpaths)}: {(loss_ds / num_steps):.6f}")
-                # DEBUG
-                break
         else:
             train_path = config["data"]["train_path"]
             dataset = LMDataset(train_path)
