@@ -5,6 +5,7 @@ data/bccwj/*
 !data/csj/
 data/csj/*
 !data/csj/csj.example
+!data/csj/test.example
 !data/bpe/
 data/bpe/*
 !data/bpe/vocab.special.asr

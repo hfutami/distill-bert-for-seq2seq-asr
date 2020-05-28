@@ -154,7 +154,7 @@ def train():
             for step_ds, path in enumerate(datpaths):
                 path = os.path.join(train_dir, path)
                 dataset = LMDataset(path)
-                num_steps = len(dataset) // batch_size if len(dataset) % batch_size == 0 else (len(dataset) // batch_size) + 1
+                num_steps = (len(dataset) // batch_size) + 1
                 logging.info(f"dataset from: {path}")
                 loss_ds = train_dataset(dataset=dataset, 
                                         model=model,

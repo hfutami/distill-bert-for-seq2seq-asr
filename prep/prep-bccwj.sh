@@ -1,8 +1,8 @@
 subword-nmt apply-bpe -c ../data/bpe/bpe2k.bpe --vocabulary ../data/bpe/bpe2k.vocab < ../data/bccwj/bccwj.lb > ../data/bccwj/bccwj.lb.bpe2k
 subword-nmt apply-bpe -c ../data/bpe/bpe2k.bpe --vocabulary ../data/bpe/bpe2k.vocab < ../data/bccwj/bccwj.pb > ../data/bccwj/bccwj.pb.bpe2k
 #
-cut -d " " -f 1 ../data/bpe/bpe2k.vocab > ../data/bccwj/bpe2k.vocab.word
-cat ../data/bpe/vocab.special.bert ../data/bpe2k.vocab.word > ../data/vocab.bert
+cut -d " " -f 1 ../data/bpe/bpe2k.vocab > ../data/bpe/bpe2k.vocab.word
+cat ../data/bpe/vocab.special.bert ../data/bpe/bpe2k.vocab.word > ../data/bpe/vocab.bert
 #
 python text2id.py -text ../data/bccwj/bccwj.lb.bpe2k -vocab ../data/bpe/vocab.bert > ../data/bccwj/bccwj.lb.id.bert
 python text2id.py -text ../data/bccwj/bccwj.pb.bpe2k -vocab ../data/bpe/vocab.bert > ../data/bccwj/bccwj.pb.id.bert

@@ -1,8 +1,8 @@
 ## Distilling the Knowledge of BERT for Sequence-to-Sequence ASR
 
 ### Requirements
-subword-nmt https://github.com/rsennrich/subword-nmt
-pytorch
+subword-nmt https://github.com/rsennrich/subword-nmt  
+pytorch  
 transformers https://github.com/huggingface/transformers
 
 ### Data preparation
@@ -11,11 +11,11 @@ We used two corpus:
 the Corpus of Spontaneous Japanese (CSJ) and the Balanced Corpus of Contemporary Written Japanese (BCCWJ).
 CSJ is for training of ASR and BERT, and BCCWJ is for training of BERT.
 
-1. Prepare CSJ-APS and CSJ-SPS data in the same format as `./data/csj.example`.
-They should be put as `./data/csj.aps` and `./data/csj.sps`.
+1. Prepare CSJ-APS and CSJ-SPS data in the same format as `./data/csj/csj.example`.
+They should be put as `./data/csj/csj.aps` and `./data/csj/csj.sps`.
 
-2. Prepare BCCWJ-LB and BCCWJ-PB data in the same format as `./data/bccwj.example`.
-They should be put as `./data/bccwj.lb` and `./data/bccwj.pb`.
+2. Prepare BCCWJ-LB and BCCWJ-PB data in the same format as `./data/bccwj/bccwj.example`.
+They should be put as `./data/csj/bccwj.lb` and `./data/csj/bccwj.pb`.
 
 3. run `./prep-bccwj.sh` (cd: `./prep`)
 
@@ -23,7 +23,8 @@ They should be put as `./data/bccwj.lb` and `./data/bccwj.pb`.
 
 ### Pre-train BERT
 
-We used TITAN X (12GB) x3 for pre-training.
+We trained them on BCCWJ-LB and BCCWJ-PB first, then on the transcriptions of CSJ-APS and CSJ-SPS.
+We used TITAN X (12GB) x3 for pre-training (about 4 days).
 
 ```
 (cd: ./bert)
@@ -32,6 +33,7 @@ python train.py -conf bert-csj.config
 ```
 
 ### Soft label preparation
+
 ```
 (cd: ./bert)
 python prep_soft_labels.py -conf bert-csj.config -model checkpoints/bert.csj.network.epoch50 -ctx utt
@@ -57,6 +59,8 @@ python train.py -conf bert-full.config
 ```
 
 ### Test ASR
+
+Prepare test data in the same format as `./data/csj/test.example`
 
 ```
 (cd: ./asr)

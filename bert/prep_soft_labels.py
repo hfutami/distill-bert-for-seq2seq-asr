@@ -103,15 +103,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     os.makedirs("../data/log/", exist_ok=True)
-    os.makedirs("../data/soft_labels/", exist_ok=True)
+    os.makedirs("../data/soft-label/", exist_ok=True)
     if args.ctx == "utt":
-        script_path = f"../data/csj/csj.aps.pathaid.bert.c1.masked"
+        script_path = f"../data/csj/csj.aps.pathaid.bert.utt.masked"
         log_path = f"../data/log/prep_soft_labels_utt.log"
-        save_path = f"../data/soft_labels/bert-utt.labels"
+        save_path = f"../data/soft-label/bert-utt.labels"
     elif args.ctx == "full":
-        script_path = f"../data/csj/csj.aps.pathaid.bert.c256.masked"
+        script_path = f"../data/csj/csj.aps.pathaid.bert.full.masked"
         log_path = f"../data/log/prep_soft_labels_full.log"
-        save_path = f"../data/soft_labels/bert-full.labels"
+        save_path = f"../data/soft-label/bert-full.labels"
 
     if args.debug:
         logging.basicConfig(format="%(asctime)s %(message)s", level=logging.DEBUG)
