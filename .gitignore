@@ -1,5 +1,5 @@
 data/*
-!script.bccwj.example
-!script.csj.example
+!bccwj.example
+!csj.example
 log/
 checkpoints/

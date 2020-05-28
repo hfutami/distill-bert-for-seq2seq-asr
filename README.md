@@ -21,11 +21,15 @@ They should be put as `./data/bccwj.lb` and `./data/bccwj.pb`.
 ### Pre-train BERT
 ```
 (at ./bert)
-python train.py -conf base.config
+python train.py -conf bert-bccwj.config
+python train.py -conf bert-csj.config
 ```
 
 ### Soft label preparation
-
+```
+(at ./bert)
+python prep_soft_labels.py -model checkpoints/bert.csj.epoch50
+```
 
 ### Train seq2seq ASR
 
