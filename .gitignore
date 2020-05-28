@@ -1,5 +1,7 @@
 data/*
 !bccwj.example
 !csj.example
+!vocab.special
 log/
 checkpoints/
+__pycache__/

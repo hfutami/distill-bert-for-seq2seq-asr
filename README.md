@@ -2,6 +2,8 @@
 
 ### Requirements
 subword-nmt https://github.com/rsennrich/subword-nmt
+pytorch
+transformers https://github.com/huggingface/transformers
 
 ### Data preparation
 
@@ -9,16 +11,19 @@ We used two corpus:
 the Corpus of Spontaneous Japanese (CSJ) and the Balanced Corpus of Contemporary Written Japanese (BCCWJ).
 CSJ is for training of ASR and BERT, and BCCWJ is for training of BERT.
 
-1. Prepare CSJ-APS and BCCWJ-SPS data in the same format as `./data/csj.example`.
+1. Prepare CSJ-APS and CSJ-SPS data in the same format as `./data/csj.example`.
 They should be put as `./data/csj.aps` and `./data/csj.sps`.
 
 2. Prepare BCCWJ-LB and BCCWJ-PB data in the same format as `./data/bccwj.example`.
 They should be put as `./data/bccwj.lb` and `./data/bccwj.pb`.
 
-3. run `./prep-csj.sh` (at `./prep`)
-4. run `./prep-bccwj.sh` (at `./prep`)
+3. run `./prep-bccwj.sh` (at `./prep`)
+
+4. run `./prep-csj.sh` (at `./prep`)
 
 ### Pre-train BERT
+
+We used ...
 ```
 (at ./bert)
 python train.py -conf bert-bccwj.config

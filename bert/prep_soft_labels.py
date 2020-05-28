@@ -8,9 +8,11 @@ from torch.nn.utils.rnn import pad_sequence
 from pytorch_transformers import (BertForMaskedLM,
                                   modeling_bert)
 
-import sys
-sys.path.append("../")
-from utils import modified_softmax
+def modified_softmax(x, dim, temp):
+    e_max, _ = torch.max((x / temp), dim=dim, keepdim=True)
+    e_cared = torch.exp((x / temp) - e_max)
+    e_sum = torch.sum(e_cared, dim=dim, keepdim=True)
+    return e_cared / e_sum
 
 TOP_K = 8
 BATCH_SIZE = 50
@@ -95,9 +97,9 @@ def get_label(model, device, path, save_path, temp):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("config_path", type=str)
-    parser.add_argument("model_path", type=str)
-    parser.add_argument("num_ctx", type=int)
+    parser.add_argument("-conf", type=str)
+    parser.add_argument("-model", type=str)
+    parser.add_argument("-num_ctx", type=int)
     parser.add_argument("--temp", type=float, default=3.0)
     parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()

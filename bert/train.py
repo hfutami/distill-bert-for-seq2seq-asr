@@ -5,8 +5,7 @@ import os
 import random
 import torch
 from torch.utils.data import DataLoader
-from pytorch_transformers import (BertForMaskedLM,
-                                  modeling_bert)
+from pytorch_transformers import BertForMaskedLM, modeling_bert
 from create_mask import create_masked_lm_labels
 from optimization import BertAdam
 import sys
@@ -48,20 +47,20 @@ def train_dataset(dataset, model, optimizer, multi_gpu, device, epoch,
             logging.info(f"epoch = {epoch + 1} step {step + 1} / {num_steps}: {(loss_sum / log_step):.6f}")
             loss_sum = 0
             # DEBUG
-            # break
+            break
 
     return loss_ds
 
 def train():
     parser = argparse.ArgumentParser()
-    parser.add_argument("config_path", type=str)
+    parser.add_argument("-conf", type=str)
     parser.add_argument("--debug", action="store_true")
     parser.add_argument("--gpu", type=str, default=None,
                         help="binary flag which gpu to use (For example '10100000' means use device_id=0 and 2)")
 
     args = parser.parse_args()
     config = configparser.ConfigParser()
-    config.read(args.config_path)
+    config.read(args.conf)
 
     hidden_size = int(config["model"]["hidden_size"])
     num_hidden_layers = int(config["model"]["num_hidden_layers"])
@@ -73,14 +72,20 @@ def train():
     mask_id = int(config["vocab"]["mask_id"])
     #
     log_path = config["log"]["log_path"]
+    log_dir = os.path.dirname(log_path)
+    os.makedirs(log_dir, exist_ok=True)
     log_step = int(config["log"]["log_step"])
     #
     train_size = int(config["data"]["train_size"])
     #
     save_prefix = config["save"]["save_prefix"]
+    save_dir = os.path.dirname(save_prefix)
+    os.makedirs(save_dir, exist_ok=True)
     save_epoch = int(config["save"]["save_epoch"])
     #
     batch_size = int(config["train"]["batch_size"])
+    if args.debug:
+        batch_size = 10
     num_epochs = int(config["train"]["num_epochs"])
     learning_rate = float(config["train"]["learning_rate"])
     warmup_proportion = float(config["train"]["warmup_proportion"])
@@ -95,7 +100,6 @@ def train():
         logging.basicConfig(filename=log_path,
                             format="%(asctime)s %(message)s",
                             level=logging.DEBUG)
-    logging.info(f"process id: {os.getpid():d} is allocated")
 
     bertconfig = modeling_bert.BertConfig(vocab_size_or_config_json_file=vocab_size,
                                           hidden_size=hidden_size,
@@ -105,7 +109,6 @@ def train():
                                           max_position_embeddings=max_position_embeddings)
     model = BertForMaskedLM(config=bertconfig)
     total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
-    logging.info(f"total trainable params: {total_params:d}")
 
     if args.gpu is not None:
         device_ids = []
@@ -153,7 +156,7 @@ def train():
             for step_ds, path in enumerate(datpaths):
                 path = os.path.join(train_dir, path)
                 dataset = LMDataset(path)
-                num_steps = (len(dataset) // batch_size) + 1
+                num_steps = len(dataset) // batch_size if len(dataset) % batch_size == 0 else (len(dataset) // batch_size) + 1
                 logging.info(f"dataset from: {path}")
                 loss_ds = train_dataset(dataset=dataset, 
                                         model=model,
@@ -169,7 +172,7 @@ def train():
                                         max_seq_len=max_seq_len)
                 logging.info(f"step {step_ds + 1} / {len(datpaths)}: {(loss_ds / num_steps):.6f}")
                 # DEBUG
-                # break
+                break
         else:
             train_path = config["data"]["train_path"]
             dataset = LMDataset(train_path)
