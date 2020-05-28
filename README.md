@@ -9,38 +9,36 @@ We used two corpus:
 the Corpus of Spontaneous Japanese (CSJ) and the Balanced Corpus of Contemporary Written Japanese (BCCWJ).
 CSJ is for training of ASR and BERT, and BCCWJ is for training of BERT.
 
-BCCWJ
-```
-cd ./prep/bccwj
-bash prep.sh {PATH_TO_YOUR_BCCWJ}
-```
+1. Prepare BCCWJ-LB and BCCWJ-PB data in the same format as `./data/bccwj.example`.
+They should be put as `./data/bccwj.lb` and `./data/bccwj.pb`.
 
-CSJ
-```
-cd ./prep/csj
-bash prep.sh {PATH_TO_YOUR_CSJ}
-```
+2. Prepare CSJ-APS and BCCWJ-SPS data in the same format as `./data/csj.example`.
+They should be put as `./data/csj.aps` and `./data/csj.sps`.
 
 ### Pre-train BERT
-
+```
+(at ./bert)
+python train.py -conf base.config
+```
 
 ### Soft label preparation
 
-```
-```
 
 ### Train seq2seq ASR
 
 baseline seq2seq ASR
 ```
+(at ./asr)
 python train.py -conf base.config
 ```
 seq2seq ASR with soft labels from BERT (utterance-level)
 ```
+(at ./asr)
 python train.py -conf bert_utt.config
 ```
 seq2seq ASR with soft labels from BERT (full-length)
 ```
+(at ./asr)
 python train.py -conf bert_full.config
 ```
 
