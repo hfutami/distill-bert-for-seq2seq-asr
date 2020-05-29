@@ -116,12 +116,9 @@ class Decoder(nn.Module):
 
         return preds
     
-    def decode(self, h_batch, seq_lens, device, beam_width=None):
+    def decode(self, h_batch, seq_lens, device):
         batch_size = h_batch.shape[0]
         assert batch_size == 1
-
-        if beam_width is None:
-            beam_width = self.beam_width
 
         frames_len = h_batch.shape[1]
 
@@ -148,7 +145,7 @@ class Decoder(nn.Module):
                 y = log_softmax(y, dim=1)
 
                 y_c = y.clone()
-                for _ in range(beam_width):
+                for _ in range(self.beam_width):
                     best_idx = y_c.data.argmax(1).item()
 
                     new_seq = cand_seq + [best_idx]
@@ -165,7 +162,7 @@ class Decoder(nn.Module):
             # sort by its score
             current_beam_paths_sorted = sorted(current_beam_paths, key=itemgetter(1), reverse=True)
 
-            beam_paths = current_beam_paths_sorted[:beam_width]
+            beam_paths = current_beam_paths_sorted[:self.beam_width]
 
             # if top candidate end with <eos>, finish decoding
             if beam_paths[0][0][-1] == self.eos_id:

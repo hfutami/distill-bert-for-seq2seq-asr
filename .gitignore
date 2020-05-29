@@ -5,7 +5,7 @@ data/bccwj/*
 !data/csj/
 data/csj/*
 !data/csj/csj.example
-!data/csj/test.example
+!data/csj/csj.eval1.example
 !data/bpe/
 data/bpe/*
 !data/bpe/vocab.special.asr
@@ -15,3 +15,4 @@ data/bpe/*
 log/
 checkpoints/
 __pycache__/
+nohup.out

@@ -24,7 +24,7 @@ They should be put as `./data/csj/bccwj.lb` and `./data/csj/bccwj.pb`.
 ### Pre-train BERT
 
 We trained them on BCCWJ-LB and BCCWJ-PB first, then on the transcriptions of CSJ-APS and CSJ-SPS.
-We used TITAN X (12GB) x3 for pre-training (about 4 days).
+We used TITAN X (12GB) 3 GPUs for pre-training (about 4 days).
 
 ```
 (cd: ./bert)
@@ -60,11 +60,12 @@ python train.py -conf bert-full.config
 
 ### Test ASR
 
-Prepare test data in the same format as `./data/csj/test.example`
+Prepare test data in the same format as `./data/csj/csj.eval1.example` and be put as `./data/csj/csj.eval1`
 
 ```
 (cd: ./asr)
-python test.py -conf {base.config or bert-utt.config or bert-full.config}
+python test.py -conf {base.config or bert-utt.config or bert-full.config} \
+-model checkpoints/{base, distill.bert.utt, distill.bert.full}.network.epoch{}
 ```
 
 ### Result

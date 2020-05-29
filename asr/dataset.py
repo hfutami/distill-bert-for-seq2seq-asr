@@ -12,7 +12,7 @@ class SpeechDataset(Dataset):
     def __init__(self, config_path):
         config = configparser.ConfigParser()
         config.read(config_path)
-        script_path = config["data"]["train_script"]
+        train_script = config["data"]["train_script"]
 
         self.lmfb_dim = int(config["frontend"]["lmfb_dim"])
         self.specaug = bool(int(config["frontend"]["specaug"]))
@@ -27,7 +27,7 @@ class SpeechDataset(Dataset):
             self.max_mask_freq = max_mask_freq
             self.max_mask_time = max_mask_time
 
-        with open(script_path) as f:
+        with open(train_script) as f:
             lines = [line.strip() for line in f.readlines()]
         self.dat = lines
 
