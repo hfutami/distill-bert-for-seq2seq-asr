@@ -1,8 +1,9 @@
 ## Distilling the Knowledge of BERT for Sequence-to-Sequence ASR
 
 ### Requirements
-subword-nmt https://github.com/rsennrich/subword-nmt  
-pytorch  
+Python  3.7.4  
+Pytorch 1.3.0  
+subword-nmt https://github.com/rsennrich/subword-nmt    
 transformers https://github.com/huggingface/transformers
 
 ### Data preparation
@@ -23,7 +24,7 @@ They should be put as `./data/csj/bccwj.lb` and `./data/csj/bccwj.pb`.
 
 ### Pre-train BERT
 
-We trained them on BCCWJ-LB and BCCWJ-PB first, then on the transcriptions of CSJ-APS and CSJ-SPS.
+We trained BERT on BCCWJ-LB and BCCWJ-PB first, then on the transcriptions of CSJ-APS and CSJ-SPS.
 We used TITAN X (12GB) 3 GPUs for pre-training (about 4 days).
 
 ```
